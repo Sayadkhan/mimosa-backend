@@ -96,18 +96,19 @@ userSchema.statics.register = async function (
 
 userSchema.statics.login = async function (email, password): Promise<userType> {
   if (!email || !password) {
-    throw new Error('must fill email and password');
+    throw new Error('Must fill email and password');
   }
 
   const user = await this.findOne({ email });
 
   if (!user) {
-    throw new Error('Incorrect email and password');
+    throw new Error('Incorrect email or password');
   }
 
   const match = await bcrypt.compare(password, user.password);
+
   if (!match) {
-    throw new Error('Incorrect email and password');
+    throw new Error('Incorrect email or password');
   }
 
   return user;

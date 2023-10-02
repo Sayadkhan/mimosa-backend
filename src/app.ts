@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import mongoSanitize from 'express-mongo-sanitize';
+import mongoSenitize from 'express-mongo-sanitize';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import mongoose from 'mongoose';
@@ -18,46 +18,38 @@ class App {
   constructor() {
     this.app = express();
 
-    this.configerMiddlewares();
+    this.configureMiddlewares();
     this.setupRoutes();
     this.connectToDatabase();
   }
 
   // mdilewars
-  private configerMiddlewares(): void {
+  private configureMiddlewares(): void {
     this.app.use(express.json());
-    //
     this.app.use(
       express.urlencoded({
         extended: true,
       })
     );
-    // cors
     this.app.use(cors());
-    // morgan
     this.app.use(morgan('dev'));
-    // express mongo senizite
-    this.app.use(mongoSanitize());
-    // helmate
+    this.app.use(mongoSenitize());
     this.app.use(helmet());
-    // hpp
     this.app.use(hpp());
   }
 
   // routesetup
   private setupRoutes(): void {
     this.app.get('/', (req: Request, res: Response) => {
-      res.status(200).json({ message: 'welcome to mimosa server' });
+      res.status(200).json({ message: 'Welcome to Mimosa server!' });
     });
 
-    // bypass api
+    // bypassed api
     this.app.use('/api/auth', authRouter);
-
     this.app.use('/api/users', userRouter);
-
     this.app.use('/api/beauty_packages', beautyPackageRouter);
-    this.app.use('/api/specialists'), specialistRouter;
-    this.app.use('/api/bookings'), bookingRouter;
+    this.app.use('/api/specialists', specialistRouter);
+    this.app.use('/api/bookings', bookingRouter);
   }
   // databaseconnect
   private connectToDatabase(): void {
