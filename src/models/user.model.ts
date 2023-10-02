@@ -1,6 +1,10 @@
 import mongoose, { Schema, model } from 'mongoose';
 import { userType } from '../types/user.type';
 
+import validator from 'validator';
+import bcrypt from 'bcrypt';
+import { userModleInterface } from '../interfaces/user.interface';
+
 const userSchema = new Schema<userType>(
   {
     name: {
@@ -45,6 +49,69 @@ const userSchema = new Schema<userType>(
   }
 );
 
-const userModel = model<userType>('User', userSchema);
+// user register function
+userSchema.statics.register = async function (
+  name,
+  email,
+  password,
+  photoUrl,
+  address,
+  phoneNumber
+): Promise<userType> {
+  if (!name || !email || !password || !photoUrl) {
+    throw new Error('Must fill name, email , password and photurl');
+  }
+
+  const existingUser = await this.findOne({ email });
+
+  if (existingUser) {
+    throw new Error('email already exist');
+  }
+
+  if (!validator.isEmail(email)) {
+    throw new Error('Invalid Email');
+  }
+  if (!validator.isStrongPassword(password)) {
+    throw new Error(
+      'password must be 8 careater , conains uppercase , lowercase number and special creacter'
+    );
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hasPassword = await bcrypt.hash(password, salt);
+
+  const user = await this.create({
+    name,
+    email,
+    password: hasPassword,
+    photoUrl,
+    address,
+    phoneNumber,
+  });
+
+  return user;
+};
+
+// user login function
+
+userSchema.statics.login = async function (email, password): Promise<userType> {
+  if (!email || !password) {
+    throw new Error('must fill email and password');
+  }
+
+  const user = await this.findOne({ email });
+
+  if (!user) {
+    throw new Error('Incorrect email and password');
+  }
+
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) {
+    throw new Error('Incorrect email and password');
+  }
+
+  return user;
+};
+const userModel = model<userType, userModleInterface>('User', userSchema);
 
 export default userModel;
