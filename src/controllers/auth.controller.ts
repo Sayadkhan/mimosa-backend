@@ -38,7 +38,7 @@ export default class AuthController {
       const { email, password } = req.body;
 
       await Promise.resolve().then(async () => {
-        const user = await userModel.login(password, email);
+        const user = await userModel.login(email, password);
 
         const token = jwtInstance.createToken(user._id);
 
