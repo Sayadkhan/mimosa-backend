@@ -1,15 +1,18 @@
 import express, { Router } from 'express';
+import AuthMiddleware from '../middlewares/auth.middleware';
 
 const bookingRouter: Router = express.Router();
 
-// creactig booking
-bookingRouter.post('/create');
+const authInstance = new AuthMiddleware();
 
-// get all booking
-bookingRouter.get('/');
+// creactig booking
+bookingRouter.post('/create', authInstance.isAuthenticated);
+
 // get all booking for an user
-bookingRouter.get('/read');
+bookingRouter.get('/read', authInstance.isAuthenticated);
 // delet a booking
-bookingRouter.delete('/:bookingid');
+bookingRouter.delete('/:bid', authInstance.isAuthenticated);
+// get all booking
+bookingRouter.get('/', authInstance.isAuthenticated, authInstance.isAdmin);
 
 export default bookingRouter;
