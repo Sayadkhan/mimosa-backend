@@ -20,7 +20,7 @@ export default class UserController {
       }
 
       await Promise.resolve().then(async () => {
-        const user = await userModel.findById(uid);
+        const user = await userModel.findById(uid).populate('bookings');
 
         res.status(200).json(user);
       });

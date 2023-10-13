@@ -6,7 +6,10 @@ import mongoose from 'mongoose';
 export default class BeautyPackageController {
   constructor() {}
 
-  public async getAllPackages(req: Request, res: Response): Promise<void> {
+  public async getAllBeautyPackages(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       await Promise.resolve().then(async () => {
         const beautyPackages = await BeautyPackageModel.find({});
@@ -18,12 +21,12 @@ export default class BeautyPackageController {
     }
   }
 
-  public async getABeautypackage(req: Request, res: Response) {
+  public async getABeautyPackage(req: Request, res: Response): Promise<void> {
     try {
       const { bid } = req.params;
 
       if (!mongoose.Types.ObjectId.isValid(bid)) {
-        res.status(404).json({ message: 'beauty package not found' });
+        res.status(404).json({ message: 'Beauty Package not found' });
       }
 
       await Promise.resolve().then(async () => {
@@ -36,18 +39,21 @@ export default class BeautyPackageController {
     }
   }
 
-  public async createABeautyPackage(req: Request, res: Response) {
+  public async createABeautyPackage(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       const { title, description, category, images, price } = req.body;
 
       await Promise.resolve().then(async () => {
-        const beautyPackage = await BeautyPackageModel.create(
+        const beautyPackage = await BeautyPackageModel.create({
           title,
           description,
           category,
           images,
-          price
-        );
+          price,
+        });
 
         res.status(200).json(beautyPackage);
       });
@@ -56,14 +62,16 @@ export default class BeautyPackageController {
     }
   }
 
-  public async upadteABeautyPackage(req: Request, res: Response) {
+  public async updateABeautyPackage(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       const { title, description, category, images, price } = req.body;
-
       const { bid } = req.params;
 
       if (!mongoose.Types.ObjectId.isValid(bid)) {
-        res.status(404).json({ message: 'beauty package not found' });
+        res.status(404).json({ message: 'Beauty Package not found' });
       }
 
       await Promise.resolve().then(async () => {
@@ -76,9 +84,7 @@ export default class BeautyPackageController {
             images,
             price,
           },
-          {
-            new: true,
-          }
+          { new: true }
         );
 
         res.status(200).json(beautyPackage);
@@ -88,12 +94,15 @@ export default class BeautyPackageController {
     }
   }
 
-  public async deletABeautypackage(req: Request, res: Response) {
+  public async deleteABeautyPackage(
+    req: Request,
+    res: Response
+  ): Promise<void> {
     try {
       const { bid } = req.params;
 
       if (!mongoose.Types.ObjectId.isValid(bid)) {
-        res.status(404).json({ message: 'beauty package not found' });
+        res.status(404).json({ message: 'Beauty Package not found' });
       }
 
       await Promise.resolve().then(async () => {

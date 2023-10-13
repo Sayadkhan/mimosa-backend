@@ -9,9 +9,9 @@ const authInstance = new AuthMiddleware();
 const beautyPackageInstance = new BeautyPackageController();
 
 // get all beautypackages
-beautyPackageRouter.get('/', beautyPackageInstance.getAllPackages);
+beautyPackageRouter.get('/', beautyPackageInstance.getAllBeautyPackages);
 // get a beauty package
-beautyPackageRouter.get('/:bid', beautyPackageInstance.getABeautypackage);
+beautyPackageRouter.get('/:bid', beautyPackageInstance.getABeautyPackage);
 // creat a beauty package
 beautyPackageRouter.post(
   '/',
@@ -31,7 +31,7 @@ beautyPackageRouter.delete(
   ':/bid',
   authInstance.isAuthenticated,
   authInstance.isAdmin,
-  beautyPackageInstance.deletABeautypackage
+  beautyPackageInstance.deleteABeautyPackage
 );
 
 export default beautyPackageRouter;
