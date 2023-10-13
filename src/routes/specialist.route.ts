@@ -1,4 +1,3 @@
-import { specialistType } from './../types/specialist.type';
 import express, { Router } from 'express';
 import AuthMiddleware from '../middlewares/auth.middleware';
 import SpecialistController from '../controllers/specialist.controller';
@@ -6,33 +5,36 @@ import SpecialistController from '../controllers/specialist.controller';
 const specialistRouter: Router = express.Router();
 
 const authInstance = new AuthMiddleware();
-
 const specialistInstance = new SpecialistController();
 
-// get all specialist
+// get all specialists
 specialistRouter.get('/', specialistInstance.getAllSpecialists);
+
 // get a specialist
 specialistRouter.get('/:sid', specialistInstance.getASpecialist);
-// creat a specialist
+
+// create a specialist
 specialistRouter.post(
-  '/',
+  '/:bid',
   authInstance.isAuthenticated,
   authInstance.isAdmin,
   specialistInstance.createASpecialist
 );
+
 // update a specialist
 specialistRouter.put(
   '/:sid',
   authInstance.isAuthenticated,
   authInstance.isAdmin,
-  specialistInstance.upadteASpecialist
+  specialistInstance.updateASpecialist
 );
-// delet a specialist
+
+// delete a specialist
 specialistRouter.delete(
-  ':/sid',
+  '/:sid',
   authInstance.isAuthenticated,
   authInstance.isAdmin,
-  specialistInstance.deletASpecialist
+  specialistInstance.deleteASpecialist
 );
 
 export default specialistRouter;
