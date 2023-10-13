@@ -11,14 +11,14 @@ const bookingInstance = new BookingController();
 bookingRouter.post(
   '/create/:bid',
   authInstance.isAuthenticated,
-  bookingInstance.creatABooking
+  bookingInstance.createABooking
 );
 
 // delet a booking
 bookingRouter.delete(
   '/:bid',
   authInstance.isAuthenticated,
-  bookingInstance.beleteABookig
+  bookingInstance.deleteABooking
 );
 // get all booking
 bookingRouter.get(

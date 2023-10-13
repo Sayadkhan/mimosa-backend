@@ -1,30 +1,30 @@
 import { bookingType } from './../types/booking.type';
 import { Request, Response } from 'express';
-import mongoose, { Promise } from 'mongoose';
-import { handleError } from '../errors/handle.error';
+import mongoose from 'mongoose';
+import userModel from '../models/user.model';
 import BoookingModel from '../models/booking.model';
 import BeautyPackageModel from '../models/beautyPackage.model';
-import userModel from '../models/user.model';
+import { handleError } from '../errors/handle.error';
 
 export default class BookingController {
   constructor() {}
 
-  public async creatABooking(req: Request, res: Response): Promise<void> {
+  public async createABooking(req: Request, res: Response): Promise<void> {
     try {
       const { bid } = req.params;
+
       if (!mongoose.Types.ObjectId.isValid(bid)) {
-        res.status(404).json({ message: 'beauty package not found' });
+        res.status(404).json({ message: 'Beauty package not found' });
       }
 
       const user = await userModel.findById(req.user?._id).populate('bookings');
 
-      const alReadyBooked = user?.bookings.find(
+      const alreadyBooked = user?.bookings.find(
         (booking: bookingType) => bid === booking.beautyPackage._id.toString()
       );
 
-      if (alReadyBooked) {
-        res.status(403).json({ message: 'beauty packages already booked' });
-
+      if (alreadyBooked) {
+        res.status(403).json({ message: 'Beauty package already booked' });
         return;
       }
 
@@ -53,11 +53,19 @@ export default class BookingController {
     }
   }
 
-  public async beleteABookig(req: Request, res: Response): Promise<void> {
+  public async deleteABooking(req: Request, res: Response): Promise<void> {
     try {
       const { bid } = req.params;
+
       if (!mongoose.Types.ObjectId.isValid(bid)) {
-        res.status(404).json({ message: 'booking not found' });
+        res.status(404).json({ message: 'Booking not found' });
+      }
+
+      const existedBooking = await BoookingModel.findById(bid);
+
+      if (!existedBooking) {
+        res.status(403).json({ message: "Booking doesn't exist" });
+        return;
       }
 
       const user = await userModel.findById(req.user?._id);
@@ -67,7 +75,8 @@ export default class BookingController {
       );
 
       if (!matchedBooking) {
-        res.status(403).json({ message: 'booking doesnt exits' });
+        res.status(403).json({ message: "Booking doesn't exist" });
+        return;
       }
 
       await Promise.resolve().then(async () => {
@@ -83,7 +92,9 @@ export default class BookingController {
   public async getAllBookings(req: Request, res: Response): Promise<void> {
     try {
       await Promise.resolve().then(async () => {
-        const bookings = await BoookingModel.find({});
+        const bookings = await BoookingModel.find({}).populate(
+          'beautyPackage user'
+        );
 
         res.status(200).json(bookings);
       });
